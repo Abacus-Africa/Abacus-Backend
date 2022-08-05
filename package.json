@@ -1,0 +1,19 @@
+{
+  "name": "abacus-backend",
+  "version": "1.0.0",
+  "description": "Backend for Abacus API Endpoints",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abacus-Africa/Abacus-Backend.git"
+  },
+  "author": "Emediong Francis & Faith Ikhidero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abacus-Africa/Abacus-Backend/issues"
+  },
+  "homepage": "https://github.com/Abacus-Africa/Abacus-Backend#readme"
+}
