@@ -18,3 +18,6 @@ router.route('/login').post(loginUser);
 
 // Logout a user.
 router.route('/logout').get(logoutUser);
+
+
+module.exports = router;

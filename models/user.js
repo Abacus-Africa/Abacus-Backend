@@ -1,5 +1,8 @@
-// Import mongoose.
 const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 
 // Define user schema.
@@ -46,3 +49,25 @@ const userSchema = new mongoose.Schema({
     resetPasswordExpire: Date
 
 })
+
+// Encrypt password before saving.
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        next();
+    }
+
+    this.password = await bcrypt.hash(this.password, 12);
+
+})
+
+// Validate password.
+userSchema.methods.validatePassword = async function (insertedPassword) {
+    return await bcrypt.compare(insertedPassword, this.password);
+}
+
+// Generate JWT Token.
+userSchema.methods.getSignedJwtToken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_COOKIE_EXPIRE
+    });
+}

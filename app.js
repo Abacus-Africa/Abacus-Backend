@@ -1,9 +1,11 @@
 // Import and init express.
 const express = require('express');
 const app = express();
+const cookieParser = require('cookie-parser');
 
-// Configure express to use json as the default data format.
+// Configure express to use cookie parser and  json as the default data format.
 app.use(express.json());
+app.use(cookieParser());
 
 // Import routes.
 const auth = require('./routes/auth');
