@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const sendToken = require('../utils/sendToken');
+const crypto = require('crypto');
 
 // Register a user.
 exports.registerUser = async (req, res, next) => {
@@ -20,11 +21,9 @@ exports.registerUser = async (req, res, next) => {
             });
         }
         // Save the user.
-        const newUser = await user.save();
-        res.status(201).json({
-            message: 'User created successfully',
-            user: newUser
-        });
+        await user.save();
+        sendToken(user, 200, res);
+
     } catch (error) {
         res.status(400).json({
             error: error.message
@@ -52,17 +51,36 @@ exports.loginUser = async (req, res, next) => {
             });
         }
         // Check if the password is correct.
-        const isMatch = await user.isValidPassword(password);
+        const isMatch = await user.validatePassword(password);
         if (!isMatch) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: 'Invalid password'
             });
         }
-        // Create a token.
-        const token = await user.generateAuthToken();
+        // Return JWT Token.
+        sendToken(user, 200, res);
+
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+}
+
+
+// Logout a user.
+exports.logoutUser = async (req, res, next) => {
+    try {
+        // Get the user from the request.
+        const user = req.user;
+        // Remove the token from the user.
+        user.tokens = user.tokens.filter(token => {
+            return token.token !== req.token;
+        });
+        // Save the user.
+        await user.save();
         res.status(200).json({
-            message: 'User logged in successfully',
-            token
+            message: 'User logged out successfully'
         });
     } catch (error) {
         res.status(400).json({
